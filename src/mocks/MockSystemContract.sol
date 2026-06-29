@@ -22,10 +22,7 @@ contract MockSystemContract {
     /// @param topic0 Event signature hash
     /// @param subscriber The address that initiated the subscription
     event SubscriptionRecorded(
-        address indexed originContract,
-        uint256 indexed chainId,
-        uint256 indexed topic0,
-        address subscriber
+        address indexed originContract, uint256 indexed chainId, uint256 indexed topic0, address subscriber
     );
 
     /// @notice Subscription key: hash(originContract, chainId, topic0)

@@ -30,12 +30,10 @@ abstract contract ReactiveHarness is Test {
     uint256 public constant DEFAULT_CHAIN_ID = 11155111;
 
     /// @notice Sepolia callback proxy address (from Reactive docs)
-    address public constant SEPOLIA_CALLBACK_PROXY =
-        0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA;
+    address public constant SEPOLIA_CALLBACK_PROXY = 0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA;
 
     /// @notice Event signature for IReactive.Callback
-    bytes32 public constant CALLBACK_EVENT_SIG =
-        keccak256("Callback(uint256,address,uint256,bytes)");
+    bytes32 public constant CALLBACK_EVENT_SIG = keccak256("Callback(uint256,address,uint256,bytes)");
 
     // -----------------------------------------------------------------------
     // State
@@ -106,8 +104,13 @@ abstract contract ReactiveHarness is Test {
     // Debug mode
     // -----------------------------------------------------------------------
 
-    function enableDebug() public { debugEnabled = true; }
-    function disableDebug() public { debugEnabled = false; }
+    function enableDebug() public {
+        debugEnabled = true;
+    }
+
+    function disableDebug() public {
+        debugEnabled = false;
+    }
 
     // -----------------------------------------------------------------------
     // Core harness operations
@@ -166,11 +169,7 @@ abstract contract ReactiveHarness is Test {
     /// @param rsc Reactive contract (for debug logging)
     /// @param destinationContract Destination contract to call
     /// @param expectedOriginTxOrigin Expected deployer address from first 20 bytes of payload
-    function deliverCallbacks(
-        address rsc,
-        address destinationContract,
-        address expectedOriginTxOrigin
-    ) public {
+    function deliverCallbacks(address rsc, address destinationContract, address expectedOriginTxOrigin) public {
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
         if (debugEnabled) {
@@ -214,8 +213,11 @@ abstract contract ReactiveHarness is Test {
             }
 
             if (expectedOriginTxOrigin != address(0)) {
-                assertEq(deployer, expectedOriginTxOrigin,
-                    "deployer address in callback data should match expectedOriginTxOrigin");
+                assertEq(
+                    deployer,
+                    expectedOriginTxOrigin,
+                    "deployer address in callback data should match expectedOriginTxOrigin"
+                );
             }
 
             // Extract calldata (bytes 20+)
@@ -227,8 +229,7 @@ abstract contract ReactiveHarness is Test {
             // Simulate callback proxy calling destination
             // Use the real callback proxy address that the destination contract checks
             vm.prank(SEPOLIA_CALLBACK_PROXY);
-            (bool success, bytes memory returnData) =
-                destinationContract.call{gas: gasLimit}(callData);
+            (bool success, bytes memory returnData) = destinationContract.call{gas: gasLimit}(callData);
 
             if (!success) {
                 string memory reason = _decodeRevertReason(returnData);
@@ -246,11 +247,7 @@ abstract contract ReactiveHarness is Test {
     // -----------------------------------------------------------------------
 
     /// @notice Assert a subscription was recorded in MockSystemContract
-    function assertSubscriptionRecorded(
-        address originContract,
-        uint256 chainId,
-        bytes32 topic0
-    ) public view {
+    function assertSubscriptionRecorded(address originContract, uint256 chainId, bytes32 topic0) public view {
         bytes32 key = keccak256(abi.encodePacked(originContract, chainId, topic0));
         Subscription memory sub = systemContract.getSubscription(key);
         assertTrue(sub.originContract != address(0), "Subscription not recorded");
@@ -260,10 +257,7 @@ abstract contract ReactiveHarness is Test {
     }
 
     /// @notice Assert a Callback event was emitted to a specific destination with a specific selector
-    function assertCallbackEmitted(
-        address destinationContract,
-        bytes4 selector
-    ) public view {
+    function assertCallbackEmitted(address destinationContract, bytes4 selector) public view {
         Vm.Log[] memory entries = vm.getRecordedLogs();
         for (uint256 i = 0; i < entries.length; i++) {
             if (entries[i].topics.length == 0) continue;
@@ -291,9 +285,7 @@ abstract contract ReactiveHarness is Test {
     // -----------------------------------------------------------------------
 
     /// @notice Decode revert reason from return data
-    function _decodeRevertReason(bytes memory returnData)
-        internal pure returns (string memory)
-    {
+    function _decodeRevertReason(bytes memory returnData) internal pure returns (string memory) {
         if (returnData.length == 0) return "No revert reason";
         if (returnData.length >= 4) {
             bytes4 selector;

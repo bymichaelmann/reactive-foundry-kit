@@ -22,11 +22,7 @@ contract MockCallbackProxy {
     /// @param targetContract The contract called
     /// @param success Whether the call succeeded
     /// @param returnData The return data from the call
-    event CallbackExecuted(
-        address indexed targetContract,
-        bool success,
-        bytes returnData
-    );
+    event CallbackExecuted(address indexed targetContract, bool success, bytes returnData);
 
     /// @notice Execute a callback to a destination contract
     /// @dev The first 20 bytes of `data` are the deployer address (substituted by RN infra)
@@ -34,11 +30,7 @@ contract MockCallbackProxy {
     /// @param data The callback payload (first 20 bytes = deployer address, rest = calldata)
     /// @param gasLimit Gas limit for the execution
     /// @return success Whether the call succeeded
-    function executeCallback(
-        address _contract,
-        bytes calldata data,
-        uint256 gasLimit
-    ) external returns (bool) {
+    function executeCallback(address _contract, bytes calldata data, uint256 gasLimit) external returns (bool) {
         require(data.length >= 20, "MockCallbackProxy: data too short");
 
         // The first 20 bytes are the deployer address

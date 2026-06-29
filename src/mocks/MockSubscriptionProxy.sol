@@ -29,15 +29,7 @@ contract MockSubscriptionProxy {
         uint256 topic3,
         uint256 gasLimit
     ) external returns (bool) {
-        return systemContract.subscribe(
-            contractAddress,
-            chainId,
-            topic0,
-            topic1,
-            topic2,
-            topic3,
-            gasLimit
-        );
+        return systemContract.subscribe(contractAddress, chainId, topic0, topic1, topic2, topic3, gasLimit);
     }
 
     /// @notice Set the system contract reference

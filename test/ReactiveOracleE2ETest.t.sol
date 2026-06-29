@@ -322,11 +322,7 @@ contract ReactiveOracleE2ETest is ReactiveHarness {
         vm.chainId(LASNA_CHAIN_ID);
 
         // The setUp already deployed with subscriptionProxy, check subscription
-        assertSubscriptionRecorded(
-            address(origin),
-            SEPOLIA_CHAIN_ID,
-            reactive.PRICE_UPDATED_TOPIC_0()
-        );
+        assertSubscriptionRecorded(address(origin), SEPOLIA_CHAIN_ID, reactive.PRICE_UPDATED_TOPIC_0());
     }
 
     /// @notice Test constructor with address(0) proxy works (RVM mode)
@@ -335,11 +331,7 @@ contract ReactiveOracleE2ETest is ReactiveHarness {
 
         // Deploy without proxy (RVM mode)
         CrossChainOracleReactive r = new CrossChainOracleReactive(
-            address(origin),
-            SEPOLIA_CHAIN_ID,
-            address(destination),
-            SEPOLIA_CHAIN_ID,
-            address(0)
+            address(origin), SEPOLIA_CHAIN_ID, address(destination), SEPOLIA_CHAIN_ID, address(0)
         );
 
         assertEq(r.ORIGIN_CONTRACT(), address(origin));
@@ -367,15 +359,8 @@ contract ReactiveOracleE2ETest is ReactiveHarness {
         deliverCallbacks(address(reactive), address(destination), address(0));
 
         // 4. ASSERT ON DESTINATION STATE
-        assertEq(
-            destination.receivedPrices(ETH_USD),
-            2000e8,
-            "Destination should have the price after full flow"
-        );
-        assertTrue(
-            destination.receiptTimestamps(ETH_USD) > 0,
-            "Destination should have a receipt timestamp"
-        );
+        assertEq(destination.receivedPrices(ETH_USD), 2000e8, "Destination should have the price after full flow");
+        assertTrue(destination.receiptTimestamps(ETH_USD) > 0, "Destination should have a receipt timestamp");
     }
 
     /// @notice Full integration test checking price decrease
@@ -406,11 +391,7 @@ contract ReactiveOracleE2ETest is ReactiveHarness {
         deliverCallbacks(address(reactive), address(destination), address(0));
 
         // Assert new price on destination
-        assertEq(
-            destination.receivedPrices(ETH_USD),
-            1800e8,
-            "Destination should have the decreased price"
-        );
+        assertEq(destination.receivedPrices(ETH_USD), 1800e8, "Destination should have the decreased price");
     }
 
     /// @notice Full integration test with multiple updates
